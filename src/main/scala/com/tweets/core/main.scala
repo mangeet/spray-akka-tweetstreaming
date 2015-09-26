@@ -7,9 +7,11 @@ import akka.actor._
  */
 object Main extends App {
 
+  val query = "Cassandra Summit"  // hard-coded but can be extended to get it from command-line args
+  
   val system = ActorSystem() 
   val storage = system.actorOf(Props[CassandraStorageActor])
-  val stream = system.actorOf(Props(new TweetStreamerActor(TweetStreamerActor.twitterUri, storage) with OAuthTwitterAuthorization))
+  val stream = system.actorOf(Props(new TweetStreamerActor(TweetStreamerActor.twitterUri, query, storage) with OAuthTwitterAuthorization))
 
-  stream ! "Cassandra Summit"
+  stream ! query
 }
