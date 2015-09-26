@@ -18,6 +18,9 @@ trait TwitterAuthorization {
   def authorize: HttpRequest => HttpRequest
 }
 
+/* file with name 'twitter' kept at user-home to read, Consumer and Access Token keys. 
+ * This keys are required for OAuth authentication to connect to Twitter account. 
+ */
 trait OAuthTwitterAuthorization extends TwitterAuthorization {
 
   import OAuth._
@@ -35,6 +38,10 @@ object TweetStreamerActor {
   val twitterUri = Uri("https://stream.twitter.com/1.1/statuses/filter.json")
 }
 
+/*
+ * Actor to prepare HttpRequest, connects with Twitter and get the stream of tweets, 
+ * each tweet then will be process by CassandraStorageActor
+ */
 class TweetStreamerActor(uri: Uri, track: String, storage: ActorRef) extends Actor {
   this: TwitterAuthorization =>
   val io = IO(Http)(context.system)
