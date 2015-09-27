@@ -42,18 +42,18 @@ object TweetStreamerActor {
  * Actor to prepare HttpRequest, connects with Twitter and get the stream of tweets, 
  * each tweet then will be process by CassandraStorageActor
  */
-class TweetStreamerActor(uri: Uri, track: String, storage: ActorRef) extends Actor {
+class TweetStreamerActor(uri: Uri, storage: ActorRef) extends Actor {
   this: TwitterAuthorization =>
   val io = IO(Http)(context.system)
 
   def receive: Receive = {
-    case query: String =>
+    case query: String => 
       val body = HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`), s"track=$query")
       val rq = HttpRequest(HttpMethods.POST, uri = uri, entity = body) ~> authorize
       sendTo(io).withResponsesReceivedBy(self)(rq)
     case ChunkedResponseStart(_) =>
-    case MessageChunk(tweet, _)  => storage ! Tweet(track, tweet.asString)
+    case MessageChunk(tweet, query)  => storage ! Tweet(query, tweet.asString)
     case _ =>
-      storage ! Tweet(track, "Oops! ERROR while connecting with Twitter.")
+      storage ! Tweet("", "Oops! ERROR while connecting with Twitter.")
   }
 }
