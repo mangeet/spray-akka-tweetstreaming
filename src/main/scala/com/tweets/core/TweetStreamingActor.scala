@@ -9,6 +9,9 @@ import spray.client.pipelining._
 import spray.http._
 import spray.http.Uri
 import spray.json.JsObject
+import spray.json.JsonParser
+import spray.json.JsString
+import scala.util.Try
 
 /**
  * @author mangeeteden
@@ -38,6 +41,8 @@ object TweetStreamerActor {
   val twitterUri = Uri("https://stream.twitter.com/1.1/statuses/filter.json")
 }
 
+case class Tweet(track: String, tweet: String)
+
 /*
  * Actor to prepare HttpRequest, connects with Twitter and get the stream of tweets, 
  * each tweet then will be process by CassandraStorageActor
@@ -58,7 +63,13 @@ class TweetStreamerActor(uri: Uri, storage: ActorRef) extends Actor {
 
     case MessageChunk(entity, _) =>
       println("Got Chunked Response." + entity.asString)
-      storage ! Tweet(track, entity.asString)
+      self ! Tweet(track, entity.asString)
+
+    case Tweet(track, entity) =>
+      Try {
+        JsonParser(entity).asJsObject
+        storage ! Tweet(track, entity.trim())
+      }
 
     case ChunkedMessageEnd(_, _) => println("Chunked Message Ended")
 
@@ -68,3 +79,4 @@ class TweetStreamerActor(uri: Uri, storage: ActorRef) extends Actor {
       storage ! Tweet("TRACK", "Oops! ERROR while connecting with Twitter.")
   }
 }
+

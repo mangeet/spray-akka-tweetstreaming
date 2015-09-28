@@ -15,8 +15,6 @@ object CassandraStorageActor {
   val session = cluster.connect("play")
 }
 
-case class Tweet(track: String, tweet: Any) 
-
 // inserting each tweet as arrive from TweetStreamingActor
 class CassandraStorageActor extends Actor {
 
