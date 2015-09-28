@@ -46,14 +46,25 @@ class TweetStreamerActor(uri: Uri, storage: ActorRef) extends Actor {
   this: TwitterAuthorization =>
   val io = IO(Http)(context.system)
 
+  var track = "";
   def receive: Receive = {
-    case query: String => 
+    case query: String =>
+      track = query;
       val body = HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`), s"track=$query")
       val rq = HttpRequest(HttpMethods.POST, uri = uri, entity = body) ~> authorize
       sendTo(io).withResponsesReceivedBy(self)(rq)
-    case ChunkedResponseStart(_) =>
-    case MessageChunk(tweet, query)  => storage ! Tweet(query, tweet.asString)
+
+    case ChunkedResponseStart(_) => println("Chunked Response started.")
+
+    case MessageChunk(entity, _) =>
+      println("Got Chunked Response." + entity.asString)
+      storage ! Tweet(track, entity.asString)
+
+    case ChunkedMessageEnd(_, _) => println("Chunked Message Ended")
+
+    case Http.Closed             => println("HTTP closed")
+
     case _ =>
-      storage ! Tweet("", "Oops! ERROR while connecting with Twitter.")
+      storage ! Tweet("TRACK", "Oops! ERROR while connecting with Twitter.")
   }
 }
