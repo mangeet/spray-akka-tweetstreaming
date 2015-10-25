@@ -1,4 +1,4 @@
-package com.tweets.core
+package me.play.streaming.tweet
 
 import akka.actor._
 
