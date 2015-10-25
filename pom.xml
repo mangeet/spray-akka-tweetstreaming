@@ -134,7 +134,6 @@
 			<artifactId>akka-testkit_2.10</artifactId>
 			<version>2.2.3</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.datastax.cassandra</groupId>
 			<artifactId>cassandra-driver-core</artifactId>
