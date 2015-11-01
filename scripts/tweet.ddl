@@ -1,3 +1,5 @@
+CREATE KEYSPACE play WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
 CREATE TABLE tweets (
   track text,
   tweet_date timeuuid,
