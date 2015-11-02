@@ -38,6 +38,7 @@ trait OAuthTwitterAuthorization extends TwitterAuthorization {
 }
 
 object TweetStreamerActor {
+  
   val twitterUri = Uri("https://stream.twitter.com/1.1/statuses/filter.json")
 }
 
@@ -48,6 +49,7 @@ case class Tweet(track: String, tweet: String)
  * each tweet then will be process by CassandraStorageActor
  */
 class TweetStreamerActor(uri: Uri, storage: ActorRef) extends Actor {
+  
   this: TwitterAuthorization =>
   val io = IO(Http)(context.system)
 

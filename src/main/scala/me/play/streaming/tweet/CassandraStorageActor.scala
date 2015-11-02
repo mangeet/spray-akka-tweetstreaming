@@ -19,11 +19,12 @@ object CassandraStorageActor {
 class CassandraStorageActor extends Actor {
 
   def receive: Receive = {
+    
     case Tweet(track, tweet) => 
       CassandraStorageActor.session.execute(s"INSERT INTO tweets (track, tweet_date, tweet) VALUES ('$track', now(), textAsBlob('$tweet'))")
 
     case JsNull           => Right(None)
     
-    case _                => println("Error while saving record in Cassandra.")
+    case _                => println("Error while saving record(tweet) in Cassandra.")
   }
 }
