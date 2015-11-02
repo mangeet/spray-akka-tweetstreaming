@@ -64,6 +64,9 @@
         <configuration>
           <transformers>
             <transformer>
+              <resource>reference.conf</resource>
+            </transformer>
+            <transformer>
               <mainClass>me.play.streaming.tweet.App</mainClass>
             </transformer>
           </transformers>

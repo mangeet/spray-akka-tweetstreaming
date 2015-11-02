@@ -30,7 +30,9 @@ trait OAuthTwitterAuthorization extends TwitterAuthorization {
 
   val home = System.getProperty("user.home")
   val lines = Source.fromFile(s"$home/twitter").getLines().toList
-
+  
+  println("Tweeter app account configurations: " + lines)
+  
   val consumer = Consumer(lines(0), lines(1))
   val token = Token(lines(2), lines(3))
 
@@ -73,9 +75,9 @@ class TweetStreamerActor(uri: Uri, storage: ActorRef) extends Actor {
         storage ! Tweet(track, entity.trim())
       }
 
-    case ChunkedMessageEnd(_, _) => println("Chunked Message Ended")
+    case ChunkedMessageEnd(_, _) => println("Chunked Message Ended.")
 
-    case Http.Closed             => println("HTTP closed")
+    case Http.Closed             => println("HTTP closed !!")
 
     case _ =>
       storage ! Tweet("TRACK", "Oops! ERROR while connecting with Twitter.")

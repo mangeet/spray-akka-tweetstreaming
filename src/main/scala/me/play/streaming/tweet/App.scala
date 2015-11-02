@@ -16,6 +16,8 @@ object App {
     // search query to fetch tweets
     val query = args(0)  // Happy Halloween
 
+    println(s"Streaming Tweets for Search Term $query")
+    
     val system = ActorSystem()
     val storage = system.actorOf(Props[CassandraStorageActor], "cassandra-storage")
     val stream = system.actorOf(Props(new TweetStreamerActor(TweetStreamerActor.twitterUri, storage) with OAuthTwitterAuthorization), "twitter-feeds")
