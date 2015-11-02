@@ -1,7 +1,6 @@
 #bin/.sh
 
 echo "Building project 'spray-akka-tweetstreaming'"
-cd ..
 mvn package
 
 echo "Start streaming tweets for query '$1'"
